@@ -1,2 +1,0 @@
-fun1.o    fun1
-fun2.o    fun2
