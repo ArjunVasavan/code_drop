@@ -1,5 +1,48 @@
-#include "../header.h"
-int main(int argc, char** argv) {
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <stdbool.h>
+#include <sys/wait.h>
+
+
+#define PORT 2000
+#define IP "127.0.0.1"
+
+typedef struct 
+{
+
+    char data_buf[65];
+
+    int pack_no;
+
+    int n_flag;
+
+} data_packet ;
+
+
+typedef struct 
+{
+
+    char command[100];
+
+    int no_of_times;
+
+} command_request_packet;
+
+typedef struct 
+{
+
+    char data[65];
+
+    int pack_no;
+
+} acknowledgement_packet;
+
+int main(int argc, char** argv) 
+{
 
     data_packet data;
     command_request_packet cmd;
@@ -7,7 +50,8 @@ int main(int argc, char** argv) {
 
     int sockfd = socket(AF_INET,SOCK_DGRAM,0);
 
-    if ( sockfd < 0 ) {
+    if ( sockfd < 0 ) 
+    {
         perror("socket failed");
         exit(EXIT_FAILURE);
     }
@@ -21,7 +65,8 @@ int main(int argc, char** argv) {
     server_addr.sin_addr.s_addr = inet_addr(IP); 
 
 
-    if ( bind(sockfd,(struct sockaddr*)&server_addr,sizeof(server_addr)) < 0 ) {
+    if ( bind(sockfd,(struct sockaddr*)&server_addr,sizeof(server_addr)) < 0 ) 
+    {
 
         perror("bind failed");
         exit(EXIT_FAILURE);
@@ -34,7 +79,8 @@ int main(int argc, char** argv) {
 
     ssize_t recieved = recvfrom(sockfd,&cmd,sizeof(cmd),0,(struct sockaddr*)&client_addr,&client_len);
 
-    if ( recieved < 0 ) {
+    if ( recieved < 0 ) 
+    {
         perror("recvfrom failed");
         exit(EXIT_FAILURE);
     }
@@ -47,7 +93,8 @@ int main(int argc, char** argv) {
 
     int file_fd = open("file.txt",O_CREAT|O_WRONLY|O_TRUNC,0666);
 
-    if ( file_fd == -1 ) {
+    if ( file_fd == -1 ) 
+    {
         perror("open failed");
         exit(EXIT_FAILURE);
     }
@@ -57,9 +104,10 @@ int main(int argc, char** argv) {
     string[0] = cmd.command;
     string[1] = NULL;
 
-    for ( int i = 1 ; i <= cmd.no_of_times ; i++ ) {
+    for ( int i = 1 ; i <= cmd.no_of_times ; i++ ) 
+    {
 
-        dup2(file_fd,STDOUT_FILENO);
+        dup2(file_fd,2);
         pid_t pid = fork();
         if ( pid == 0 ){
             execvp(cmd.command,string);
@@ -77,7 +125,8 @@ int main(int argc, char** argv) {
 
     int pack_counter = 0;
 
-    while ( (read_count = read(file_fd,buffer,64) ) > 0 ) {
+    while ( (read_count = read(file_fd,buffer,64) ) > 0 ) 
+    {
 
         memcpy(data.data_buf,buffer,read_count);
         data.n_flag = read_count;
@@ -87,11 +136,13 @@ int main(int argc, char** argv) {
 
         recvfrom(sockfd,&ack,sizeof(ack),0, (struct sockaddr*)&client_addr,&client_len);
 
-        if ( ack.pack_no != data.pack_no ) {
+        if ( ack.pack_no != data.pack_no ) 
+        {
 
             printf("Entered Ack sending");
         
-            while (ack.pack_no != data.pack_no) {
+            while (ack.pack_no != data.pack_no) 
+            {
                 sendto(sockfd,&data,sizeof(data),0,(struct sockaddr*)&client_addr,client_len);
                 recvfrom(sockfd,&ack,sizeof(ack),0, (struct sockaddr*)&client_addr,&client_len);
             }
