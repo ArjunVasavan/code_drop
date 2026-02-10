@@ -1,98 +1,76 @@
 #include<stdio.h>
 #include "types.h"
 
-int multiplication(Dlist **head1,Dlist **tail1,Dlist **head2,Dlist **tail2,Dlist **reshead,Dlist **restail)
+int addition(Dlist **head1,Dlist **tail1,Dlist **head2,Dlist **tail2,Dlist **reshead,Dlist **restail)
 {
-    int count = 0;
     Dlist *temp1 = *tail1;
     Dlist *temp2 = *tail2;
 
-    int carry;
-    
-    Dlist *Rh1 = NULL;
-    Dlist *Rt1 = NULL;
-    Dlist *Rh2 = NULL;
-    Dlist *Rt2 = NULL;
-    Dlist *Rh3 = NULL;
-    Dlist *Rt3 = NULL;
+    int carry = 0;
+    int data;
 
-    while(temp2)
+    while(temp1 || temp2)
     {
-        carry = 0;
-        int data = 0;
-        Rh2 = NULL;
-        Rt1 = NULL;
-        
-        if(count != 0)
+        if(temp1 && temp2)
         {
-            for(int i=0 ; i<count ; i++)
+            if((data = temp1 -> data + temp2 -> data + carry) > 9)
             {
-                insert_at_first(0,&Rh2, &Rt2);
-            }
-        }
-        temp1 = *tail1;
-
-        while(temp1)
-        {
-            data = (temp1 -> data * temp2 -> data) + carry;
-            carry = data / 10;
-            data = data % 10;
-
-            if(count==0)
-            {
-                insert_at_first(data,&Rh1, &Rt1);
+                carry = 1;
             }
             else
+                carry = 0;
+        }
+        else if(temp1 == NULL && temp2 != NULL)
+        {
+             if((data = temp2 -> data + carry) > 9)
             {
-                insert_at_first(data,&Rh2, &Rt2);
+                carry = 1;
             }
-
-            temp1 = temp1->prev;
-        
-        }
-            
-        if(carry)
-        {
-            if (count == 0)
-                insert_at_first(carry,&Rh1, &Rt1);
             else
-                insert_at_first(carry,&Rh2, &Rt2);
+                carry = 0;
         }
-
-        if(count)
+        else if(temp1 != NULL && temp2 == NULL)
         {
-            addition(&Rh1, &Rt1, &Rh2, &Rt2, &Rh3, &Rt3);
-            delete_list(&Rh1, &Rt1);
-            Rh1 = Rh3;
-            Rt1 = Rt3;
-            Rh3 = NULL;
-            Rt3 = NULL;
-            delete_list(&Rh2, &Rt2);
+             if((data = temp1 -> data + carry) > 9)
+            {
+                carry = 1;
+            }
+            else
+                carry = 0;
         }
 
-        temp2 = temp2->prev;
-        count++;       
+        data = data % 10;
+        insert_at_first(data,reshead,restail);
+
+        if(temp1)
+            temp1 = temp1 -> prev;
+        if(temp2)
+            temp2 = temp2 -> prev;
     }
 
-    *reshead = Rh1;
-    *restail = Rt1;
-    return SUCCESS;
+    if(carry == 1)
+    {
+        insert_at_first(1,reshead,restail);
+    }
 }
 
-int delete_list(Dlist **head, Dlist **tail)
+int insert_at_first(int data,Dlist **head,Dlist **tail)
 {
+    Dlist *new = malloc(sizeof(Dlist));
+    
+    new -> data = data;
+    new -> prev = NULL;
+    new -> next = NULL;
+    
     if(*head == NULL && *tail == NULL)
     {
-        return FAILURE;
+        *head = new;
+        *tail = new;
+        return SUCCESS;
     }
-    Dlist *temp = *head;
-    while(temp != NULL)
-    {
-        Dlist *next = temp -> next;
-        free(temp);
-        temp = next;
-    }
-    *head = NULL;
-    *tail = NULL;
+    
+    new -> next = *head;
+    new -> next -> prev = new;
+    *head = new;
     return SUCCESS;
 }
