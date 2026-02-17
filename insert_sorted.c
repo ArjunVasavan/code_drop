@@ -1,56 +1,38 @@
 #include "sll.h"
-#include <time.h>
+int insert_sorted(Slist **head, data_t data)
+{
+    Slist *new_node = malloc(sizeof(Slist));
+    if (new_node == NULL)
+        return FAILURE;
 
-/* Function for insert the number in sorted linked list */
-int insert_sorted( Slist **head, data_t data) 
-{ 
-    if ( *head == NULL ) {
-        Slist* new_node = malloc(sizeof(Slist));
-        if (new_node == NULL ) return FAILURE;
-        new_node->data = data;
-        new_node->link = NULL;
+    new_node->data = data;
+    new_node->link = NULL;
+
+    // Case 1: Empty list
+    if (*head == NULL) {
         *head = new_node;
         return SUCCESS;
     }
 
-    Slist* temp = *head;
-
-    while (temp) {
-
-        if ( ( temp->data >= data ) && (*head == temp) ) {
-            Slist* new_node = malloc(sizeof(Slist));
-            if (new_node == NULL ) return FAILURE;
-
-            new_node->data = data;
-            new_node->link = temp;
-            *head = new_node;
-            return SUCCESS;
-        }
-
-        if ( temp->data >= data ) {
-            Slist* new_node = malloc(sizeof(Slist));
-            if (new_node == NULL ) return FAILURE;
-
-            new_node->data = data;
-            new_node->link = temp->link;
-            temp->link = new_node;
-            return SUCCESS;
-        }
-
-        if ( temp->link == NULL ) {
-            break;
-        }
-
-        temp = temp->link;
+    // Case 2: Insert at beginning
+    if (data <= (*head)->data) {
+        new_node->link = *head;
+        *head = new_node;
+        return SUCCESS;
     }
 
-    Slist* new_node = malloc(sizeof(Slist));
-    if (new_node == NULL ) return FAILURE;
+    // Case 3: Insert in middle or end
+    Slist *prev = *head;
+    Slist *curr = (*head)->link;
 
-    new_node->data = data;
-    new_node->link = NULL;
-    temp->link = new_node;
+    while (curr != NULL && curr->data < data) {
+        prev = curr;
+        curr = curr->link;
+    }
 
+    new_node->link = curr;
+    prev->link = new_node;
 
     return SUCCESS;
-} 
+}
+
