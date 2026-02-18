@@ -1,4 +1,3 @@
-[12:50 pm, 18/02/2026] Dheeraj @ Emertxe:
 #ifndef MAIN_H
 #define MAIN_H
 
@@ -20,7 +19,7 @@ int peek(Stack_t *stk);
 void pop(Stack_t *stk);
 #endif 
 main.h
-[12:51 pm, 18/02/2026] Dheeraj @ Emertxe: #include "main.h"
+#include "main.h"
 #include <string.h>
 
 int main()
@@ -41,7 +40,7 @@ int main()
 	return 0;
 }
 main.c
-[12:51 pm, 18/02/2026] Dheeraj @ Emertxe: #include "main.h"
+#include "main.h"
 #include <ctype.h>
 
 int Infix_Postfix_conversion(char *Infix_exp, char *Postfix_exp, Stack_t *stk)
@@ -67,8 +66,30 @@ int Infix_Postfix_conversion(char *Infix_exp, char *Postfix_exp, Stack_t *stk)
             }
             if (peek(stk) != -1) {
                 pop(stk);  // Remove '('
-         …
-[12:51 pm, 18/02/2026] Dheeraj @ Emertxe: #include "main.h"
+            }
+        }
+        // Operator - check precedence
+        else if (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^') {
+            while (peek(stk) != -1 && peek(stk) != '(' && 
+                   priority(peek(stk)) >= priority(ch)) {
+                Postfix_exp[j++] = peek(stk);
+                pop(stk);
+            }
+            push(stk, ch);
+        }
+        i++;
+    }
+    
+    // Pop remaining operators
+    while (peek(stk) != -1) {
+        Postfix_exp[j++] = peek(stk);
+        pop(stk);
+    }
+    
+    Postfix_exp[j] = '\0';
+    return 0;
+}
+#include "main.h"
 
 int perform_operation(char op, int op1, int op2) {
     switch(op) {
@@ -95,8 +116,18 @@ int Postfix_Eval(char *Postfix_exp, Stack_t *stk)
         else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
             int operand2 = peek(stk);
             pop(stk);
-    …
-[12:51 pm, 18/02/2026] Dheeraj @ Emertxe: #include "main.h"
+            int operand1 = peek(stk);
+            pop(stk);
+            int result = perform_operation(ch, operand1, operand2);
+            push(stk, result);
+        }
+        i++;
+    }
+    
+    // Final result is at top of stack
+    return peek(stk);
+}
+#include "main.h"
 
 int priority(char opr)
 {
@@ -126,4 +157,91 @@ int peek(Stack_t *stk)
 		return stk -> stack[stk -> top];
 	}
 	return -1;
+}
+#include "main.h"
+#include <ctype.h>
+
+int Infix_Postfix_conversion(char *Infix_exp, char *Postfix_exp, Stack_t *stk)
+{
+    int i = 0, j = 0;
+    
+    while (Infix_exp[i] != '\0') {
+        char ch = Infix_exp[i];
+        
+        // Operand - copy directly to postfix
+        if (isalnum(ch)) {
+            Postfix_exp[j++] = ch;
+        }
+        // Left parenthesis - push to stack
+        else if (ch == '(') {
+            push(stk, ch);
+        }
+        // Right parenthesis - pop until left parenthesis
+        else if (ch == ')') {
+            while (peek(stk) != -1 && peek(stk) != '(') {
+                Postfix_exp[j++] = peek(stk);
+                pop(stk);
+            }
+            if (peek(stk) != -1) {
+                pop(stk);  // Remove '('
+            }
+        }
+        // Operator - check precedence
+        else if (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^') {
+            while (peek(stk) != -1 && peek(stk) != '(' && 
+                   priority(peek(stk)) >= priority(ch)) {
+                Postfix_exp[j++] = peek(stk);
+                pop(stk);
+            }
+            push(stk, ch);
+        }
+        i++;
+    }
+    
+    // Pop remaining operators
+    while (peek(stk) != -1) {
+        Postfix_exp[j++] = peek(stk);
+        pop(stk);
+    }
+    
+    Postfix_exp[j] = '\0';
+    return 0;
+}
+#include "main.h"
+
+int perform_operation(char op, int op1, int op2) {
+    switch(op) {
+        case '+': return op1 + op2;
+        case '-': return op1 - op2;
+        case '*': return op1 * op2;
+        case '/': return op1 / op2;
+        default:  return 0;
+    }
+}
+
+int Postfix_Eval(char *Postfix_exp, Stack_t *stk)
+{
+    int i = 0;
+    
+    while (Postfix_exp[i] != '\0') {
+        char ch = Postfix_exp[i];
+        
+        // If operand (digit), push its integer value
+        if (isdigit(ch)) {
+            push(stk, ch - '0');  // Convert char '5' to int 5
+        }
+        // If operator, pop 2 operands, compute, push result
+        else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+            int operand2 = peek(stk);
+            pop(stk);
+            int operand1 = peek(stk);
+            pop(stk);
+            int result = perform_operation(ch, operand1, operand2);
+            push(stk, result);
+        }
+        i++;
+    }
+    
+    // Final result is at top of stack
+    return peek(stk);
 }
