@@ -1,0 +1,129 @@
+[12:50 pm, 18/02/2026] Dheeraj @ Emertxe:
+#ifndef MAIN_H
+#define MAIN_H
+
+#define SIZE_STACK 50
+
+#include <stdio.h> 
+#include <ctype.h>
+
+typedef struct{
+    int top;
+    int stack[SIZE_STACK];
+}Stack_t;
+
+int Infix_Postfix_conversion(char *Postfix_exp, char *Infix_exp, Stack_t *stk);
+int Postfix_Eval(char *Postfix_exp, Stack_t *stk);
+int priority(char opr);
+void push(Stack_t *stk, int data);
+int peek(Stack_t *stk);
+void pop(Stack_t *stk);
+#endif 
+main.h
+[12:51 pm, 18/02/2026] Dheeraj @ Emertxe: #include "main.h"
+#include <string.h>
+
+int main()
+{
+	char Infix_exp[50], Postfix_exp[50], ch;
+	int choice, result;
+	Stack_t stk;
+	stk.top = -1;
+
+	printf("Enter the Infix expression : ");
+	scanf("%s", Infix_exp);
+
+	Infix_Postfix_conversion(Infix_exp, Postfix_exp, &stk);
+	printf("PostFix expression : %s\n", Postfix_exp);
+	stk.top = -1;
+	result = Postfix_Eval(Postfix_exp, &stk);
+	printf("\nResult : %d\n", result);
+	return 0;
+}
+main.c
+[12:51 pm, 18/02/2026] Dheeraj @ Emertxe: #include "main.h"
+#include <ctype.h>
+
+int Infix_Postfix_conversion(char *Infix_exp, char *Postfix_exp, Stack_t *stk)
+{
+    int i = 0, j = 0;
+    
+    while (Infix_exp[i] != '\0') {
+        char ch = Infix_exp[i];
+        
+        // Operand - copy directly to postfix
+        if (isalnum(ch)) {
+            Postfix_exp[j++] = ch;
+        }
+        // Left parenthesis - push to stack
+        else if (ch == '(') {
+            push(stk, ch);
+        }
+        // Right parenthesis - pop until left parenthesis
+        else if (ch == ')') {
+            while (peek(stk) != -1 && peek(stk) != '(') {
+                Postfix_exp[j++] = peek(stk);
+                pop(stk);
+            }
+            if (peek(stk) != -1) {
+                pop(stk);  // Remove '('
+         …
+[12:51 pm, 18/02/2026] Dheeraj @ Emertxe: #include "main.h"
+
+int perform_operation(char op, int op1, int op2) {
+    switch(op) {
+        case '+': return op1 + op2;
+        case '-': return op1 - op2;
+        case '*': return op1 * op2;
+        case '/': return op1 / op2;
+        default:  return 0;
+    }
+}
+
+int Postfix_Eval(char *Postfix_exp, Stack_t *stk)
+{
+    int i = 0;
+    
+    while (Postfix_exp[i] != '\0') {
+        char ch = Postfix_exp[i];
+        
+        // If operand (digit), push its integer value
+        if (isdigit(ch)) {
+            push(stk, ch - '0');  // Convert char '5' to int 5
+        }
+        // If operator, pop 2 operands, compute, push result
+        else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+            int operand2 = peek(stk);
+            pop(stk);
+    …
+[12:51 pm, 18/02/2026] Dheeraj @ Emertxe: #include "main.h"
+
+int priority(char opr)
+{
+    if (opr == '+' || opr == '-') return 1;
+    if (opr == '*' || opr == '/') return 2;
+    if (opr == '^') return 3;
+    return 0;
+}
+
+
+void push(Stack_t *stk, int data)
+{
+	++(stk -> top);
+	stk -> stack[stk -> top] = data;
+}
+
+void pop(Stack_t *stk)
+{
+	if (stk -> top != -1)
+		--(stk -> top);
+}
+
+int peek(Stack_t *stk)
+{
+	if (stk -> top != -1)
+	{
+		return stk -> stack[stk -> top];
+	}
+	return -1;
+}
