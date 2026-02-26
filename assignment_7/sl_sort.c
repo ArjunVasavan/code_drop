@@ -7,6 +7,9 @@ int sl_sort(Slist **head)
 
     while (temp) {
     
-        temp = 
+        temp = temp->link;
+        len++;
     }
+
+
 }
