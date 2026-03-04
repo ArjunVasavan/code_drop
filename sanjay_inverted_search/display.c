@@ -34,4 +34,3 @@ void display_database(hash_t *hash_table)
         printf("\n");
     }
 }
-

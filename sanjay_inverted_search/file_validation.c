@@ -55,4 +55,3 @@ status_t validate_files(int argc, char **argv, file_t **head) {
 
     return SUCCESS;
 }
-

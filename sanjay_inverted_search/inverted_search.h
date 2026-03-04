@@ -88,4 +88,3 @@ void free_database(hash_t hash_table[]);
 void file_t_print(file_t* head);
 
 #endif
-
