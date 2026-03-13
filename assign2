@@ -1,80 +1,147 @@
 #include <xc.h>
 
-void delay() {
-    for(unsigned long i = 0; i < 50000; i++);
-}
+// Configuration bits
+#pragma config OSC = HS
+#pragma config WDT = OFF
+#pragma config LVP = OFF
+#pragma config PBADEN = OFF
 
-void pattern1() {
-    for(int i = 0; i < 8; i++)
+void main(void)
+{
+    unsigned int count = 0;
+    unsigned int i = 0;
+    unsigned int wait = 0;
+
+    unsigned char flag = 0;
+
+    // LEDs
+    TRISB = 0x00;
+    PORTB = 0x00;
+
+    // Switches
+    TRISC = 0xFF;
+
+    while(1)
     {
-        PORTB = (1 << i);
-        delay();
-    }
-
-    for(int i = 6; i >= 1; i--)
-    {
-        PORTB = (1 << i);
-        delay();
-    }
-}
-
-void pattern2() {
-    for(int i = 0; i < 8; i++)
-    {
-        PORTB |= (1 << i);
-        delay();
-    }
-
-    for(int i = 0; i < 8; i++)
-    {
-        PORTB &= ~(1 << i);
-        delay();
-    }
-}
-
-void pattern3() {
-    PORTB = 0xAA;   // 10101010
-    delay();
-
-    PORTB = 0x55;   // 01010101
-    delay();
-}
-
-void pattern4() {
-    PORTB = 0xF0;   // First 4 OFF, next 4 ON
-    delay();
-
-    PORTB = 0x0F;   // First 4 ON, next 4 OFF
-    delay();
-}
-
-void main() {
-    TRISB = 0x00;   // LEDs as output
-    TRISD = 0x0F;   // Sw
-    {
-        TRISB = 0x00;   // LEDs as output
-        TRISD = 0x0F;   // Switches as input
-
-        PORTB = 0x00;   // All LEDs OFF
-
-        while(1)
+        // -------- Switch Selection --------
+        if(PORTCbits.RC0 == 0)
         {
-            if(RC0 == 0)        // Switch 1
+            flag = 1;
+            count = 0;
+            PORTB = 0x00;
+        }
+        else if(PORTCbits.RC1 == 0)
+        {
+            flag = 2;
+            count = 0;
+            PORTB = 0x00;
+        }
+        else if(PORTCbits.RC2 == 0)
+        {
+            flag = 3;
+            wait = 0;
+        }
+        else if(PORTCbits.RC3 == 0)
+        {
+            flag = 4;
+            wait = 0;
+        }
+
+
+        // -------- Pattern 1 --------
+        // ON L?R, OFF L?R, ON R?L, OFF R?L
+        if(flag == 1)
+        {
+            if(wait++ == 25000)
             {
-                pattern1();
-            }
-            else if(RC1 == 0)   // Switch 2
-            {
-                pattern2();
-            }
-            else if(RC2 == 0)   // Switch 3
-            {
-                pattern3();
-            }
-            else if(RC3 == 0)   // Switch 4
-            {
-                pattern4();
+                i = count % 8;
+
+                if(count < 8)
+                    PORTB |= (1 << i);
+
+                else if(count < 16)
+                    PORTB &= ~(1 << i);
+
+                else if(count < 24)
+                    PORTB |= (1 << (7 - i));
+
+                else if(count < 32)
+                    PORTB &= ~(1 << (7 - i));
+
+                else
+                {
+                    count = 0;
+                    wait = 0;
+                    continue;
+                }
+
+                count++;
+                wait = 0;
             }
         }
-    }
 
+
+        // -------- Pattern 2 --------
+        // ON L?R then OFF L?R
+        else if(flag == 2)
+        {
+            if(wait++ == 25000)
+            {
+                i = count % 8;
+
+                if(count < 8)
+                    PORTB |= (1 << i);
+
+                else if(count < 16)
+                    PORTB &= ~(1 << i);
+
+                else
+                {
+                    count = 0;
+                    wait = 0;
+                    continue;
+                }
+
+                count++;
+                wait = 0;
+            }
+        }
+
+
+        // -------- Pattern 3 --------
+        // Alternate LEDs
+        else if(flag == 3)
+        {
+            if(wait++ <= 25000)
+                PORTB = 0x55;
+
+            else if(wait <= 50000)
+                PORTB = 0xAA;
+
+            else
+                wait = 0;
+        }
+
+
+        // -------- Pattern 4 --------
+        // Nibble blinking
+        else if(flag == 4)
+        {
+            if(wait++ <= 25000)
+                PORTB = 0xF0;
+
+            else if(wait <= 50000)
+                PORTB = 0x0F;
+
+            else
+                wait = 0;
+        }
+
+
+        // -------- Default --------
+        else
+        {
+            PORTB = 0x00;
+        }
+    }
+}
