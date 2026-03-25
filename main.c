@@ -1,62 +1,64 @@
 #include <xc.h>
 
-volatile unsigned int sec = 0;
+volatile unsigned int flag;
+volatile unsigned long int delay;
 
-void __interrupt() isr() {
+#define EDGE 1
 
-    if (INTCONbits.INT0IF) {
-        INTCONbits.INT0IF = 0;
-        sec = 0;
+unsigned int read_switch(int key) {
+    if (key == EDGE) {
+        if ((PORTC & 0x0F) != 0x0F) {
+            return PORTC & 0x0F;
+        }
     }
+    return 0x0F;
 }
-
-void display(char* data) {
-
-    for ( int i = 0 ; i < 4 ; i++ ) {
-        PORTD = data[i];
-        PORTA = (unsigned)(PORTA & 0xF0) | ( 1 << i );
-        for ( unsigned int delay = 1000 ; delay--;);
-    }
-}
-
-unsigned long int delay;
-char digit[12] = {0xE7,0x21,0xCB,0x6B,0x2D,0X6E,0xEE,0x23,0xEF,0x6F,0x40,0x40};
-char ssd[4];
-unsigned long int delay = 0;
 
 int main(void) {
+    TRISB = 0;
+    PORTB = 0;
+    PORTBbits.RB1 = 1;
+    TRISC |= 0x0F;
 
-    TRISD = 0x00;
-    TRISA &= 0xF0; // or chech TRISA = 0x00
-    TRISB = 0x01 ;// here interrupt will take RB0
+    delay = 0;
+    flag = 0;
 
-    PORTB = 0x00;
-    PORTBbits.RB7 = 0;
-
-    INTCONbits.GIE = 1;
-    INTCONbits.INT0IE = 1;
-    INTCONbits.INT0IF = 0;
-
+    int duty_cycle = 20;
+    int period = 100;
+    int program_cycle = 0;
+    int key = 0;
+    unsigned long int sec_counter = 0;
 
     while (1) {
+        key = read_switch(EDGE);
 
-        ssd[0] = digit[0];
-        ssd[1] = digit[1];
-        ssd[2] = digit[2];
-        ssd[3] = digit[3];
-
-        display(ssd);
-
-        if (delay++ == 300 ) {
-
-            delay = 0;
-            PORTBbits.RB7 = !PORTBbits.RB7;
-            sec+=1;
+        if (key == 0x0E) {
+            flag = 1;
+            sec_counter = 0;
         }
 
-        if ( sec == 5 ) {
-            SLEEP();
+        if (flag == 1) {
+            sec_counter++;
+            duty_cycle = 100;
+            if (sec_counter >= 300000) {
+                flag = 0;
+                duty_cycle = 20;
+                sec_counter = 0;
+            }
+        }
+
+        if (duty_cycle == 100) {
+            PORTBbits.RB1 = 1;
+        } else {
+            if (program_cycle <= duty_cycle) {
+                PORTBbits.RB1 = 1;
+            } else if (program_cycle <= period) {
+                PORTBbits.RB1 = 0;
+            }
+            program_cycle++;
+            if (program_cycle > period) {
+                program_cycle = 0;
+            }
         }
     }
 }
-
