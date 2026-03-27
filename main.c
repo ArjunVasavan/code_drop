@@ -53,15 +53,15 @@ char key_pressed(char key, char bit) {
 int main(void) {
     int hr   = 0;
     int min  = 0;
-    int mode = 0;           /* 0 = run, 1 = edit                               */
-    int edit_field = 0;     /* 0 = editing hours, 1 = editing minutes          */
+    int mode = 0;
+    int edit_field = 0;
 
     char ssd[4];
     char key;
 
-    TRISD  = 0x00;      
-    TRISA &= 0xF0;     
-    TRISC |= 0x0F;    
+    TRISD  = 0x00; // TRISD -> Seven segment
+    TRISA &= 0xF0; // Controller pin
+    TRISC |= 0x0F; // TRISC -> that pull up keyboard    
 
     T0CON             = 0xC4;  
     TMR0              = 8;
@@ -69,6 +69,7 @@ int main(void) {
     INTCONbits.GIE    = 1;
 
     while (1) {
+
         key = read_digital_keypad();
 
         if (key_pressed(key, 0x08)) {
@@ -98,8 +99,8 @@ int main(void) {
 
             ssd[0] = digit[hr / 10];
             ssd[1] = (count < 10000)
-                     ? (0x10 | digit[hr % 10])
-                     :          digit[hr % 10];
+                ? (0x10 | digit[hr % 10])
+                :          digit[hr % 10];
             ssd[2] = digit[min / 10];
             ssd[3] = digit[min % 10];
 
