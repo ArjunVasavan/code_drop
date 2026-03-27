@@ -72,7 +72,7 @@ int main(void) {
 
         key = read_digital_keypad();
 
-        if (key_pressed(key, 0x08)) {
+        if (key_pressed(key, 0x0E)) {
             mode = !mode;
             if (mode == 1) {
                 INTCONbits.TMR0IE = 0;
@@ -105,11 +105,11 @@ int main(void) {
             ssd[3] = digit[min % 10];
 
         } else {
-            if (key_pressed(key, 0x04)) {
+            if (key_pressed(key, 0x0B)) {
                 edit_field = !edit_field;
             }
 
-            if (key_pressed(key, 0x01)) {
+            if (key_pressed(key, 0x07)) {
                 if (edit_field == 0) {
                     hr  = (hr  + 1) % 24;
                 } else {
@@ -117,7 +117,7 @@ int main(void) {
                 }
             }
 
-            if (key_pressed(key, 0x02)) {
+            if (key_pressed(key, 0x0D)) {
                 if (edit_field == 0) {
                     hr  = (hr  + 23) % 24;
                 } else {
