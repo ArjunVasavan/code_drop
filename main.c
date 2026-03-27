@@ -1,143 +1,64 @@
 #include <xc.h>
 
-/* NOTE: Logic
-     * if ( mode == 0 ) {
-     *      if ( sec == 60 ) {
-     *
-     *          min++;
-     *          sec = 0;
-     *          if ( min == 60 ) {
-     *              hr++;
-     *          } 
-     *
-     *          if ( hr == 24 ) {
-     *              hr = 0;
-     *          }
-     *      }
-     *      ssd[0] = digit[hr/10];
-     *      ssd[3] = digit[min/10];
-     *      ssd[0] = digit[min%10];
-     *
-     *      if ( count < 10000 ) {
-     *          ssd[1] = 0x10 | digit[hr%10];
-     *
-     *      } else {
-     *          ssd[1] = digit[hr%10];
-     *      }
-     *
-     * } else if ( mode == 1 ) {
-     *
-     * }
-     */
+volatile unsigned int flag;
+volatile unsigned long int delay;
 
-/* NOTE: Edit Mode
- * Edit mode is switch 4
- * Dp should be turned off
- * Editable field blinks ( minute and hour )
- * Blinking (min) -> 0000 -> 00XX -> 0000 -> 00XX
- * Switch 3 -> for choosing which field
- * Switch 1 => increment Switch 2 => Decrement
- * if Switch 4 is once more pressed it should go back to run mode
- * on run mode switch 1, 2, 3 should not work
- */
+#define EDGE 1
 
-/* TODO: Steps
- * hr = 0, min = 0, sec = 0
- * mode = 0 is run 1 is edit
- * if ( mode == 0 ) run mode
- * 
- */
-
-unsigned long int sec;
-unsigned long int count;
-unsigned int ssd[4];
-
-
-char digit[] = {0xE7,0x21,0xCB,0x6B,0x2D,0x6E,0xEE,0x23,0xEF,0x6F};
-
-void __interrupt() isr() {
-
-    if (INTCONbits.TMR0IF) {
-
-        TMR0+=8;
-
-        if ( count++ == 20000) {
-            sec+=1;
+unsigned int read_switch(int key) {
+    if (key == EDGE) {
+        if ((PORTC & 0x0F) != 0x0F) {
+            return PORTC & 0x0F;
         }
     }
-}
-
-
-char read_digital_keypad(){
-    return (PORTC & 0x0F); // Pull up keyboard all are setted up as input
-}
-
-void display(char data[]) {
-
-    for(unsigned int digit = 0; digit < 4; digit++) {
-        PORTD = data[digit];
-        PORTA = (PORTA & 0xF0) | (1 << digit);
-        for(unsigned int delay = 1000; delay--;);
-    }
+    return 0x0F;
 }
 
 int main(void) {
+    TRISB = 0;
+    PORTB = 0;
+    PORTBbits.RB0 = 1;
+    TRISC |= 0x0F;
 
-    int hr = 0;
-    int min = 0;
-    sec = 0;
+    delay = 0;
+    flag = 0;
 
-    int mode = 0;
+    int duty_cycle = 20;
+    int period = 100;
+    int program_cycle = 0;
+    int key = 0;
+    unsigned long int sec_counter = 0;
 
-    TRISD = 0x00;
-    TRISA &= 0xF0;
-    TRISC |= 0x0F;   // keypad input
-
-    char ssd[4];
-    char key;
-
-    
     while (1) {
-        key = read_digital_keypad();
+        key = read_switch(EDGE);
 
-        if ( key == 0x2D ) {
-            mode = !mode;
+        if (key == 0x0E) {
+            flag = 1;
+            sec_counter = 0;
         }
 
-        if ( mode == 1) {
-
-
-            if ( sec == 60 ) {
-
-                min++;
-                sec = 0;
-
-                if ( min == 60 ) {
-                    hr++;
-                    min = 0;
-                }
-
-                if ( hr == 24 ) {
-                    hr = 0;
-                }
-
+        if (flag == 1) {
+            sec_counter++;
+            duty_cycle = 100;
+            if (sec_counter >= 300000) {
+                flag = 0;
+                duty_cycle = 20;
+                sec_counter = 0;
             }
+        }
 
-            ssd[0] = digit[hr/10];
-
-            if ( count < 10000 ){  // 500 ms
-                ssd[1] = 0x10|digit[hr%10];
-            } else {
-                ssd[1] = digit[hr%10];
+        if (duty_cycle == 100) {
+            PORTBbits.RB0 = 1;
+        } else {
+            if (program_cycle <= duty_cycle) {
+                PORTBbits.RB0 = 1;
+            } else if (program_cycle <= period) {
+                PORTBbits.RB0 = 0;
             }
-
-            ssd[0] = digit[min/10];
-            ssd[0] = digit[min%10];
-
-
-        } else if ( mode == 0 ) {
-        
-
+            program_cycle++;
+            if (program_cycle > period) {
+                program_cycle = 0;
+            }
         }
     }
 }
