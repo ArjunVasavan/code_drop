@@ -39,7 +39,7 @@ void display(char *data) {
     }
 }
 
-char read_digital_keypad(char key) {
+char read_digital_keypad() {
         if ((PORTC & 0x0F) != 0x0F && flag) {
             flag = 0;
             return PORTC & 0x0F;
@@ -47,7 +47,6 @@ char read_digital_keypad(char key) {
         else if((PORTC & 0x0F) == 0x0F) {
             flag = 1;
         }
-        
     return 0x0F; 
 }
 
@@ -71,7 +70,7 @@ int main(void) {
     ADCON1 = 0x0F;
     while(1)
     {
-        char key = read_digital_keypad(EDGE);
+        char key = read_digital_keypad();
         
         if(key == 0x07)
         {
