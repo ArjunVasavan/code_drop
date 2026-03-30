@@ -5,7 +5,9 @@
  */
 
 #include <xc.h>
+
 #define EDGE 1
+
 signed char hr = 0;
 signed char min = 0;
 char sec = 0;
@@ -16,14 +18,12 @@ char field_flag = 0;
 char digit[10] = {0xE7,0x21,0xCB,0x6B,0x2D,0X6E,0xEE,0x23,0xEF,0x6F}; // 7-seg codes
 char ssd[4];     // 4-digit display buffer
 
-void __interrupt() isr()
-{
-    if(INTCONbits.TMR0IF)
-    {
-        TMR0 = 8 + TMR0;
-        
-        if(count++ == 20000)
-        {
+void __interrupt() isr() {
+    if(INTCONbits.TMR0IF) {
+
+        TMR0 = 8 + TMR0; // adding preloaded value 6 + 2 ( instruction + execute )
+
+        if(count++ == 20000) {
             sec++;
             count = 0;
         }
@@ -31,31 +31,23 @@ void __interrupt() isr()
     }
 }
 
-void display(char *data)
-{
-    for( int i = 0 ; i < 4 ; i++ )
-    {
+void display(char *data) {
+    for( int i = 0 ; i < 4 ; i++ ) {
         PORTD = data[i];   // Send segment data
         PORTA = (unsigned char)((PORTA & 0XF0) | (1 << i)); // Select digit
         for( int delay_1 = 500; delay_1--; ); // Multiplexing delay
     }
 }
 
-char read_digital_keypad(char key) 
-{
-    if (key == EDGE)
-    {
-        if ((PORTC & 0x0F) != 0x0F && flag)
-        {
+char read_digital_keypad(char key) {
+        if ((PORTC & 0x0F) != 0x0F && flag) {
             flag = 0;
             return PORTC & 0x0F;
         }
-        else if((PORTC & 0x0F) == 0x0F)
-        {
+        else if((PORTC & 0x0F) == 0x0F) {
             flag = 1;
         }
         
-    }
     return 0x0F; 
 }
 
