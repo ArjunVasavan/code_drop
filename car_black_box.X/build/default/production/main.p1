@@ -31,23 +31,23 @@ Version 4.0 HI-TECH Software Intermediate Code
 "9
 [; ;./external_eeprom.h: 9: void write_external_eeprom(unsigned char address, unsigned char data);
 [v _write_external_eeprom `(v ~T0 @X0 0 ef2`uc`uc ]
-"63 ./black_box.h
-[; ;./black_box.h: 63: void view_dashboard(void);
+"65 ./black_box.h
+[; ;./black_box.h: 65: void view_dashboard(void);
 [v _view_dashboard `(v ~T0 @X0 0 ef ]
-"72
-[; ;./black_box.h: 72: void display_main_menu(void);
+"74
+[; ;./black_box.h: 74: void display_main_menu(void);
 [v _display_main_menu `(v ~T0 @X0 0 ef ]
-"75
-[; ;./black_box.h: 75: void view_log(void);
+"77
+[; ;./black_box.h: 77: void view_log(void);
 [v _view_log `(v ~T0 @X0 0 ef ]
-"87
-[; ;./black_box.h: 87: void download_log(void);
+"89
+[; ;./black_box.h: 89: void download_log(void);
 [v _download_log `(v ~T0 @X0 0 ef ]
-"90
-[; ;./black_box.h: 90: void clear_log(void);
+"92
+[; ;./black_box.h: 92: void clear_log(void);
 [v _clear_log `(v ~T0 @X0 0 ef ]
-"84
-[; ;./black_box.h: 84: void set_time(void);
+"86
+[; ;./black_box.h: 86: void set_time(void);
 [v _set_time `(v ~T0 @X0 0 ef ]
 "52 C:/Program Files/Microchip/MPLABX/v6.25/packs/Microchip/PIC18Fxxxx_DFP/1.7.171/xc8\pic\include\proc/pic18f4580.h
 [; ;C:/Program Files/Microchip/MPLABX/v6.25/packs/Microchip/PIC18Fxxxx_DFP/1.7.171/xc8\pic\include\proc/pic18f4580.h: 52: __asm("RXF6SIDH equ 0D60h");
@@ -1459,17 +1459,17 @@ Version 4.0 HI-TECH Software Intermediate Code
 "74
 [; ;main.c: 74:                 break;
 [e $U 1117  ]
-"77
-[; ;main.c: 77:             case e_set_time:
+"76
+[; ;main.c: 76:             case e_set_time:
 [e :U 1124 ]
-"78
-[; ;main.c: 78:                 set_time();
+"77
+[; ;main.c: 77:                 set_time();
 [e ( _set_time ..  ]
-"79
-[; ;main.c: 79:                 break;
+"78
+[; ;main.c: 78:                 break;
 [e $U 1117  ]
-"81
-[; ;main.c: 81:         }
+"80
+[; ;main.c: 80:         }
 }
 [e $U 1117  ]
 [e :U 1118 ]
@@ -1481,13 +1481,13 @@ Version 4.0 HI-TECH Software Intermediate Code
  , $ -> . `E10603 3 `ui 1124
  1117 ]
 [e :U 1117 ]
-"83
-[; ;main.c: 83:     }
+"82
+[; ;main.c: 82:     }
 }
 [e :U 1114 ]
 [e $U 1115  ]
 [e :U 1116 ]
-"85
-[; ;main.c: 85: }
+"84
+[; ;main.c: 84: }
 [e :UE 1111 ]
 }

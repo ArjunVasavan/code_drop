@@ -18169,7 +18169,7 @@ unsigned char __t1rd16on(void);
 unsigned char __t3rd16on(void);
 # 34 "C:\\Program Files\\Microchip\\xc8\\v3.10\\pic\\include/xc.h" 2 3
 # 2 "./black_box.h" 2
-# 42 "./black_box.h"
+# 44 "./black_box.h"
 typedef enum {
     e_dashboard, e_main_menu, e_view_log, e_set_time, e_download_log, e_clear_log
 } State_t;
@@ -18353,7 +18353,6 @@ int main(void) {
             case e_clear_log:
                 clear_log();
                 break;
-
 
             case e_set_time:
                 set_time();

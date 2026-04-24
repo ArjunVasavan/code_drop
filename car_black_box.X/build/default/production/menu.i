@@ -18169,7 +18169,7 @@ unsigned char __t1rd16on(void);
 unsigned char __t3rd16on(void);
 # 34 "C:\\Program Files\\Microchip\\xc8\\v3.10\\pic\\include/xc.h" 2 3
 # 2 "./black_box.h" 2
-# 42 "./black_box.h"
+# 44 "./black_box.h"
 typedef enum {
     e_dashboard, e_main_menu, e_view_log, e_set_time, e_download_log, e_clear_log
 } State_t;
@@ -18266,6 +18266,7 @@ void write_ds1307(unsigned char address, unsigned char data);
 unsigned char read_ds1307(unsigned char address);
 # 7 "menu.c" 2
 
+static unsigned char first_entry = 1;
 
 void display_main_menu(void) {
 
@@ -18273,40 +18274,40 @@ void display_main_menu(void) {
     static unsigned char cursor = 0;
     static unsigned char selected = 0;
 
+    if ( first_entry ) {
+        menu_index = 0;
+        cursor = 0;
+        selected = 0;
+        first_entry = 0;
+        clcd_write(0x01, 0);
+    }
+
     const char* menu[] = {
         "VIEW LOG",
         "DOWNLOAD",
+        "CLEAR LOG",
         "SET TIME",
-        "CLEAR LOG"
     };
 
     unsigned char key = read_switches(1);
 
-    if ( key == 1 && selected < 3 ) {
-        selected+=1;
-        if ( cursor == 0 ) {
-            cursor = 1;
-        } else {
-            cursor = 0;
-            menu_index+=1;
-        }
+    if ( key == 2 && selected < 3 ) {
+        selected += 1;
+        menu_index = (selected > 0) ? selected - 1 : 0;
+        cursor = (selected == 0) ? 0 : 1;
         clcd_write(0x01, 0);
-    } else if ( key == 2 && selected > 0 ) {
-        selected--;
-        if ( cursor == 1 ) {
-            cursor = 0;
-        } else {
-            cursor = 1;
-            menu_index-=1;
-        }
+    } else if ( key == 1 && selected > 0 ) {
+        selected -= 1;
+        menu_index = (selected > 0) ? selected - 1 : 0;
+        cursor = (selected == 0) ? 0 : 1;
         clcd_write(0x01, 0);
-    } else if (key == 11) {
+    } else if ( key == 11 ) {
+        first_entry = 1;
         if ( selected == 0 ) state = e_view_log;
         if ( selected == 1 ) state = e_download_log;
-        if ( selected == 2 ) state = e_set_time;
-        if ( selected == 3 ) state = e_clear_log;
+        if ( selected == 2 ) state = e_clear_log;
+        if ( selected == 3 ) state = e_set_time;
     } else if ( key == 12 ) {
-
         menu_index = 0;
         cursor = 0;
         selected = 0;
@@ -18314,19 +18315,16 @@ void display_main_menu(void) {
         clcd_write(0x01, 0);
     }
 
-
-
     if ( cursor == 0 ) {
-        clcd_print((unsigned char*)"->",(0x80 + (0)));
-        clcd_print((unsigned char*)"  ",(0xC0 + (0)));
+        clcd_print((unsigned char*)"->", (0x80 + (0)));
+        clcd_print((unsigned char*)"  ", (0xC0 + (0)));
     } else {
-        clcd_print((unsigned char*)"  ",(0x80 + (0)));
-        clcd_print((unsigned char*)"->",(0xC0 + (0)));
+        clcd_print((unsigned char*)"  ", (0x80 + (0)));
+        clcd_print((unsigned char*)"->", (0xC0 + (0)));
     }
 
-    clcd_print((unsigned char*)menu[menu_index],(0x80 + (3)));
-    clcd_print((unsigned char*)menu[menu_index+1],(0xC0 + (3)));
-
+    clcd_print((unsigned char*)menu[menu_index], (0x80 + (3)));
+    clcd_print((unsigned char*)menu[menu_index+1], (0xC0 + (3)));
 }
 
 void view_log(void) {
@@ -18334,95 +18332,100 @@ void view_log(void) {
     static unsigned char read_index = 0;
     static unsigned char log_count = 0;
 
+
     if ( write_flag == 0 && write_index == 0 ) {
+        first_entry = 1;
+        read_index = 0;
+        log_count = 0;
         clcd_write(0x01, 0);
-        clcd_print((const unsigned char*)"NO LOGS TO ",(0x80 + (3)));
-        clcd_print((const unsigned char*)"DISPLAY",(0xC0 + (4)));
+        clcd_print((const unsigned char*)"NO LOGS TO", (0x80 + (3)));
+        clcd_print((const unsigned char*)"DISPLAY", (0xC0 + (4)));
         _delay((unsigned long)((2000)*(20000000/4000.0)));
         state = e_main_menu;
         return;
     }
 
+    if ( first_entry ) {
+        first_entry = 0;
+        read_index = 0;
+        log_count = 0;
+        clcd_write(0x01, 0);
+        clcd_print((const unsigned char*)"SN SP  GR TIME", (0x80 + (0)));
+        clcd_print((const unsigned char*)"PRESS SW1/SW2", (0xC0 + (0)));
+    }
+
     unsigned char key = read_switches(1);
 
-    if ( key == 1 ) {
-        if ( write_flag == 0 ) {
+    if ( key == 2 || key == 1 ) {
 
-            if ( ( read_index + 5 ) < write_index ) {
-                read_index+=5;
-                log_count+=1;
-            }
-        } else {
-            if ( log_count < 9 ) {
-                read_index+=5;
-                log_count+=1;
-                if ( read_index >= 50 ) {
-                    read_index = 0;
+        if ( key == 2 ) {
+            if ( write_flag == 0 ) {
+                if ( ( read_index + 5 ) < write_index ) {
+                    read_index += 5;
+                    log_count += 1;
+                }
+            } else {
+                if ( log_count < 9 ) {
+                    read_index += 5;
+                    log_count += 1;
+                    if ( read_index >= 50 ) {
+                        read_index = 0;
+                    }
                 }
             }
+        } else if ( key == 1 && log_count > 0 ) {
+            if ( read_index < 5 ) {
+                read_index = 45;
+            } else {
+                read_index -= 5;
+            }
+            log_count -= 1;
         }
 
-    } else if (key == 2 && log_count > 0 ) {
+        unsigned char spd = read_external_eeprom(read_index + 0);
+        unsigned char gr = read_external_eeprom(read_index + 1);
+        unsigned char hr = read_external_eeprom(read_index + 2);
+        unsigned char mn = read_external_eeprom(read_index + 3);
+        unsigned char sc = read_external_eeprom(read_index + 4);
 
-        if ( read_index < 5 ) {
-            read_index = 45;
-        } else {
-            read_index-=5;
-        }
-        log_count-=1;
+        unsigned char spd_str[4];
+        convert_speed_to_string(spd_str, spd);
+
+        unsigned char time_str[9];
+        time_str[0] = ( hr / 10 ) + '0';
+        time_str[1] = ( hr % 10 ) + '0';
+        time_str[2] = ':';
+        time_str[3] = ( mn / 10 ) + '0';
+        time_str[4] = ( mn % 10 ) + '0';
+        time_str[5] = ':';
+        time_str[6] = ( sc / 10 ) + '0';
+        time_str[7] = ( sc % 10 ) + '0';
+        time_str[8] = '\0';
+
+        const char* serial_no[] = {
+            "01","02","03","04","05",
+            "06","07","08","09","10"
+        };
+
+        clcd_write(0x01, 0);
+        clcd_print((const unsigned char*)"SN SP  GR TIME", (0x80 + (0)));
+        clcd_print((const unsigned char*)serial_no[log_count], (0xC0 + (0)));
+        clcd_print((const unsigned char*)spd_str, (0xC0 + (3)));
+
+        if ( gr == 0 ) clcd_putch('N', (0xC0 + (7)));
+        else if ( gr <= 5 ) clcd_putch(gr + '0', (0xC0 + (7)));
+        else if ( gr == 6 ) clcd_putch('R', (0xC0 + (7)));
+        else if ( gr == 7 ) clcd_putch('C', (0xC0 + (7)));
+
+        clcd_print(time_str, (0xC0 + (8)));
+
     } else if ( key == 12 ) {
-
+        first_entry = 1;
         read_index = 0;
         log_count = 0;
         state = e_main_menu;
         clcd_write(0x01, 0);
-        return;
     }
-
-
-
-    unsigned char spd = read_external_eeprom(read_index+0);
-    unsigned char gr = read_external_eeprom(read_index+1);
-    unsigned char hr = read_external_eeprom(read_index+2);
-    unsigned char mn = read_external_eeprom(read_index+3);
-    unsigned char sc = read_external_eeprom(read_index+4);
-
-    unsigned char spd_str[4];
-
-    convert_speed_to_string(spd_str,spd);
-
-    unsigned char time_str[9];
-    time_str[0] = ( hr / 10 ) + '0';
-    time_str[1] = ( hr % 10 ) + '0';
-    time_str[2] = ':';
-    time_str[3] = ( mn / 10 ) + '0';
-    time_str[4] = ( mn % 10 ) + '0';
-    time_str[5] = ':';
-    time_str[6] = ( sc / 10 ) + '0';
-    time_str[7] = ( sc % 10 ) + '0';
-    time_str[8] = '\0';
-
-
-
-    const char* serial_no[] = {
-        "01","02","03","04","05",
-        "06","07","08","09","10"
-    };
-
-
-    clcd_print((const unsigned char*)"SN SP  GR TIME",(0x80 + (0)));
-
-
-    clcd_print((const unsigned char*)serial_no[log_count],(0xC0 + (0)));
-    clcd_print((const unsigned char*)spd_str,(0xC0 + (3)));
-
-
-    if ( gr == 0 ) clcd_putch('N',(0xC0 + (7)));
-    else if ( gr <= 5 ) clcd_putch(gr+'0',(0xC0 + (7)));
-    else if ( gr == 6 ) clcd_putch('R',(0xC0 + (7)));
-
-
-    clcd_print(time_str,(0xC0 + (9)));
 }
 
 void set_time(void) {
@@ -18438,7 +18441,7 @@ void set_time(void) {
     while (1) {
         unsigned char key = read_switches(1);
 
-        if ( key == 1 ) {
+        if ( key == 2 ) {
             if ( field == 1 ) {
                 sec+=1;
                 if ( sec == 60 ) {
@@ -18455,7 +18458,7 @@ void set_time(void) {
                     hr = 0;
                 }
             }
-        } else if ( key == 2 ) {
+        } else if ( key == 1 ) {
 
             if ( field == 1 ) {
                 sec-=1;
@@ -18486,13 +18489,13 @@ void set_time(void) {
             unsigned char bcd_min = ( ( min / 10 ) << 4 ) | ( min % 10 );
             unsigned char bcd_sec = ( ( sec / 10 ) << 4 ) | ( sec % 10 );
 
-           write_ds1307(0x02, bcd_hr);
-           write_ds1307(0x01,bcd_min);
-           write_ds1307(0x00,bcd_sec);
+            write_ds1307(0x02, bcd_hr);
+            write_ds1307(0x01,bcd_min);
+            write_ds1307(0x00,bcd_sec);
 
-           clcd_print((const unsigned char*)"TIME SAVED!", (0x80 + (3)));
-           _delay((unsigned long)((2000)*(20000000/4000.0)));
-           break;
+            clcd_print((const unsigned char*)"TIME SAVED!", (0x80 + (3)));
+            _delay((unsigned long)((2000)*(20000000/4000.0)));
+            break;
 
         }
 
@@ -18600,6 +18603,7 @@ void download_log(void) {
         if ( gr == 0 ) put_char('N');
         else if ( gr <= 5 ) put_char(gr + '0');
         else if ( gr == 6 ) put_char('R');
+        else if ( gr == 7 ) put_char('C');
 
         put_str((unsigned char*)"     ");
 
@@ -18612,24 +18616,24 @@ void download_log(void) {
         if ( read_index >= 50 ) read_index = 0;
     }
 
+    first_entry = 1;
     state = e_main_menu;
 }
 
 void clear_log(void) {
     clcd_write(0x01, 0);
-    clcd_print((const unsigned char*)"CLEARING",(0x80 + (4)));
-    clcd_print((const unsigned char*)"THE LOGS",(0xC0 + (4)));
-
+    clcd_print((const unsigned char*)"CLEARING", (0x80 + (4)));
+    clcd_print((const unsigned char*)"THE LOGS", (0xC0 + (4)));
 
     write_index = 0;
     write_flag = 0;
 
-
-    write_external_eeprom(100,write_index);
-    write_external_eeprom(101,write_flag);
+    write_external_eeprom(100, write_index);
+    write_external_eeprom(101, write_flag);
 
     _delay((unsigned long)((2000)*(20000000/4000.0)));
 
+    first_entry = 1;
     state = e_main_menu;
     clcd_write(0x01, 0);
 }

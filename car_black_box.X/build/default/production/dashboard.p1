@@ -5,26 +5,26 @@ Version 4.0 HI-TECH Software Intermediate Code
 "9 ./external_eeprom.h
 [; ;./external_eeprom.h: 9: void write_external_eeprom(unsigned char address, unsigned char data);
 [v _write_external_eeprom `(v ~T0 @X0 0 ef2`uc`uc ]
-"47 ./black_box.h
-[; ;./black_box.h: 47: extern unsigned char write_index;
+"49 ./black_box.h
+[; ;./black_box.h: 49: extern unsigned char write_index;
 [v _write_index `uc ~T0 @X0 0 e ]
-"50
-[; ;./black_box.h: 50: extern unsigned char speed_val;
-[v _speed_val `uc ~T0 @X0 0 e ]
-"49
-[; ;./black_box.h: 49: extern unsigned char gear;
-[v _gear `uc ~T0 @X0 0 e ]
-"51
-[; ;./black_box.h: 51: extern unsigned char hours;
-[v _hours `uc ~T0 @X0 0 e ]
 "52
-[; ;./black_box.h: 52: extern unsigned char minutes;
-[v _minutes `uc ~T0 @X0 0 e ]
+[; ;./black_box.h: 52: extern unsigned char speed_val;
+[v _speed_val `uc ~T0 @X0 0 e ]
+"51
+[; ;./black_box.h: 51: extern unsigned char gear;
+[v _gear `uc ~T0 @X0 0 e ]
 "53
-[; ;./black_box.h: 53: extern unsigned char seconds;
+[; ;./black_box.h: 53: extern unsigned char hours;
+[v _hours `uc ~T0 @X0 0 e ]
+"54
+[; ;./black_box.h: 54: extern unsigned char minutes;
+[v _minutes `uc ~T0 @X0 0 e ]
+"55
+[; ;./black_box.h: 55: extern unsigned char seconds;
 [v _seconds `uc ~T0 @X0 0 e ]
-"48
-[; ;./black_box.h: 48: extern unsigned char write_flag;
+"50
+[; ;./black_box.h: 50: extern unsigned char write_flag;
 [v _write_flag `uc ~T0 @X0 0 e ]
 "19 ./ds1307.h
 [; ;./ds1307.h: 19: unsigned char read_ds1307(unsigned char address);
@@ -38,12 +38,12 @@ Version 4.0 HI-TECH Software Intermediate Code
 "40 ./matrix_keypad.h
 [; ;./matrix_keypad.h: 40: unsigned char read_switches(unsigned char detection_type);
 [v _read_switches `(uc ~T0 @X0 0 ef1`uc ]
-"115 dashboard.c
-[; ;dashboard.c: 115:         state = e_main_menu;
+"127 dashboard.c
+[; ;dashboard.c: 127:         state = e_main_menu;
 [c E10603 0 1 2 3 4 5 .. ]
 [n E10603 . e_dashboard e_main_menu e_view_log e_set_time e_download_log e_clear_log  ]
-"55 ./black_box.h
-[; ;./black_box.h: 55: extern State_t state;
+"57 ./black_box.h
+[; ;./black_box.h: 57: extern State_t state;
 [v _state `E10603 ~T0 @X0 0 e ]
 "52 C:/Program Files/Microchip/MPLABX/v6.25/packs/Microchip/PIC18Fxxxx_DFP/1.7.171/xc8\pic\include\proc/pic18f4580.h
 [; ;C:/Program Files/Microchip/MPLABX/v6.25/packs/Microchip/PIC18Fxxxx_DFP/1.7.171/xc8\pic\include\proc/pic18f4580.h: 52: __asm("RXF6SIDH equ 0D60h");
@@ -1338,21 +1338,12 @@ Version 4.0 HI-TECH Software Intermediate Code
 -> 0 `c
 ..
 ]
-"13
-[; ;dashboard.c: 13: static unsigned char event[3] = "ON";
-[v _event `uc ~T0 @X0 -> 3 `i s ]
-[i _event
-:U ..
--> 79 `c
--> 78 `c
--> 0 `c
-..
-]
 "14
-[; ;dashboard.c: 14: static unsigned char speed[4] = "00";
+[; ;dashboard.c: 14: static unsigned char speed[4] = "000";
 [v _speed `uc ~T0 @X0 -> 4 `i s ]
 [i _speed
 :U ..
+-> 48 `c
 -> 48 `c
 -> 48 `c
 -> 0 `c
@@ -1542,132 +1533,164 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e :U _show_collision ]
 [f ]
 "92
-[; ;dashboard.c: 92:     clcd_write(0x01, 0);
-[e ( _clcd_write (2 , -> -> 1 `i `uc -> -> 0 `i `uc ]
+[; ;dashboard.c: 92:     gear = 7;
+[e = _gear -> -> 7 `i `uc ]
 "93
-[; ;dashboard.c: 93:     clcd_print((const unsigned char*)"COLLISION",(0x80 + (3)));
-[e ( _clcd_print (2 , -> :s 8C `*Cuc -> + -> 128 `i -> 3 `i `uc ]
+[; ;dashboard.c: 93:     save_log();
+[e ( _save_log ..  ]
 "94
-[; ;dashboard.c: 94:     clcd_print((const unsigned char*)"HAPPEN",(0xC0 + (4)));
-[e ( _clcd_print (2 , -> :s 9C `*Cuc -> + -> 192 `i -> 4 `i `uc ]
+[; ;dashboard.c: 94:     clcd_write(0x01, 0);
+[e ( _clcd_write (2 , -> -> 1 `i `uc -> -> 0 `i `uc ]
+"95
+[; ;dashboard.c: 95:     clcd_print((const unsigned char*)"COLLISION",(0x80 + (3)));
+[e ( _clcd_print (2 , -> :s 8C `*Cuc -> + -> 128 `i -> 3 `i `uc ]
 "96
-[; ;dashboard.c: 96:     while (1) {
+[; ;dashboard.c: 96:     clcd_print((const unsigned char*)"HAPPEN",(0xC0 + (4)));
+[e ( _clcd_print (2 , -> :s 9C `*Cuc -> + -> 192 `i -> 4 `i `uc ]
+"98
+[; ;dashboard.c: 98:     while (1) {
 [e :U 1119 ]
 {
-"97
-[; ;dashboard.c: 97:         unsigned char key = read_switches(1);
+"99
+[; ;dashboard.c: 99:         unsigned char key = read_switches(1);
 [v _key `uc ~T0 @X0 1 a ]
 [e = _key ( _read_switches (1 -> -> 1 `i `uc ]
-"98
-[; ;dashboard.c: 98:         if ( key != 0xFF ) {
+"100
+[; ;dashboard.c: 100:         if ( key != 0xFF ) {
 [e $ ! != -> _key `i -> 255 `i 1121  ]
 {
-"99
-[; ;dashboard.c: 99:             break;
+"101
+[; ;dashboard.c: 101:             break;
 [e $U 1120  ]
-"100
-[; ;dashboard.c: 100:         }
+"102
+[; ;dashboard.c: 102:         }
 }
 [e :U 1121 ]
-"101
-[; ;dashboard.c: 101:     }
+"103
+[; ;dashboard.c: 103:     }
 }
 [e :U 1118 ]
 [e $U 1119  ]
 [e :U 1120 ]
-"102
-[; ;dashboard.c: 102: }
+"104
+[; ;dashboard.c: 104:     clcd_write(0x01, 0);
+[e ( _clcd_write (2 , -> -> 1 `i `uc -> -> 0 `i `uc ]
+"105
+[; ;dashboard.c: 105: }
 [e :UE 1117 ]
 }
-"104
-[; ;dashboard.c: 104: void view_dashboard() {
+"107
+[; ;dashboard.c: 107: void view_dashboard() {
 [v _view_dashboard `(v ~T0 @X0 1 ef ]
 {
 [e :U _view_dashboard ]
 [f ]
-"105
-[; ;dashboard.c: 105:     read_real_time_clock();
-[e ( _read_real_time_clock ..  ]
-"106
-[; ;dashboard.c: 106:     read_speed_adc();
-[e ( _read_speed_adc ..  ]
-"107
-[; ;dashboard.c: 107:     update_time();
-[e ( _update_time ..  ]
 "108
-[; ;dashboard.c: 108:     display_labels();
-[e ( _display_labels ..  ]
-"109
-[; ;dashboard.c: 109:     clcd_print(time, (0xC0 + (0)));
-[e ( _clcd_print (2 , -> &U _time `*Cuc -> + -> 192 `i -> 0 `i `uc ]
+[; ;dashboard.c: 108:     static unsigned char first_entry = 1;
+[v F10680 `uc ~T0 @X0 1 s first_entry ]
+[i F10680
+-> -> 1 `i `uc
+]
 "110
-[; ;dashboard.c: 110:     clcd_print((const unsigned char*)gear_display[gear],(0xC0 + (9)));
-[e ( _clcd_print (2 , -> *U + &U _gear_display * -> _gear `ux -> -> # *U &U _gear_display `ui `ux `*Cuc -> + -> 192 `i -> 9 `i `uc ]
+[; ;dashboard.c: 110:     if ( first_entry ) {
+[e $ ! != -> F10680 `i -> 0 `i 1123  ]
+{
 "111
-[; ;dashboard.c: 111:     clcd_print(speed, (0xC0 + (13)));
-[e ( _clcd_print (2 , -> &U _speed `*Cuc -> + -> 192 `i -> 13 `i `uc ]
+[; ;dashboard.c: 111:         first_entry = 0;
+[e = F10680 -> -> 0 `i `uc ]
 "112
-[; ;dashboard.c: 112:     unsigned char key = read_switches(1);
+[; ;dashboard.c: 112:         clcd_write(0x01, 0);
+[e ( _clcd_write (2 , -> -> 1 `i `uc -> -> 0 `i `uc ]
+"113
+[; ;dashboard.c: 113:     }
+}
+[e :U 1123 ]
+"115
+[; ;dashboard.c: 115:     read_real_time_clock();
+[e ( _read_real_time_clock ..  ]
+"116
+[; ;dashboard.c: 116:     read_speed_adc();
+[e ( _read_speed_adc ..  ]
+"117
+[; ;dashboard.c: 117:     update_time();
+[e ( _update_time ..  ]
+"118
+[; ;dashboard.c: 118:     display_labels();
+[e ( _display_labels ..  ]
+"119
+[; ;dashboard.c: 119:     clcd_print(time, (0xC0 + (0)));
+[e ( _clcd_print (2 , -> &U _time `*Cuc -> + -> 192 `i -> 0 `i `uc ]
+"120
+[; ;dashboard.c: 120:     clcd_print((const unsigned char*)gear_display[gear], (0xC0 + (10)));
+[e ( _clcd_print (2 , -> *U + &U _gear_display * -> _gear `ux -> -> # *U &U _gear_display `ui `ux `*Cuc -> + -> 192 `i -> 10 `i `uc ]
+"121
+[; ;dashboard.c: 121:     clcd_print(speed, (0xC0 + (13)));
+[e ( _clcd_print (2 , -> &U _speed `*Cuc -> + -> 192 `i -> 13 `i `uc ]
+"123
+[; ;dashboard.c: 123:     unsigned char key = read_switches(1);
 [v _key `uc ~T0 @X0 1 a ]
 [e = _key ( _read_switches (1 -> -> 1 `i `uc ]
-"113
-[; ;dashboard.c: 113:     if ( key == 11 ) {
-[e $ ! == -> _key `i -> 11 `i 1123  ]
-{
-"114
-[; ;dashboard.c: 114:         clcd_write(0x01, 0);
-[e ( _clcd_write (2 , -> -> 1 `i `uc -> -> 0 `i `uc ]
-"115
-[; ;dashboard.c: 115:         state = e_main_menu;
-[e = _state . `E10603 1 ]
-"116
-[; ;dashboard.c: 116:     } else if ( key == 1 && gear < 6 ) {
-}
-[e $U 1124  ]
-[e :U 1123 ]
-[e $ ! && == -> _key `i -> 1 `i < -> _gear `i -> 6 `i 1125  ]
-{
-"117
-[; ;dashboard.c: 117:         gear+=1;
-[e =+ _gear -> -> 1 `i `uc ]
-"118
-[; ;dashboard.c: 118:         save_log();
-[e ( _save_log ..  ]
-"119
-[; ;dashboard.c: 119:     } else if ( key == 2 && gear > 0 ) {
-}
-[e $U 1126  ]
-[e :U 1125 ]
-[e $ ! && == -> _key `i -> 2 `i > -> _gear `i -> 0 `i 1127  ]
-{
-"120
-[; ;dashboard.c: 120:         gear-=1;
-[e =- _gear -> -> 1 `i `uc ]
-"121
-[; ;dashboard.c: 121:         save_log();
-[e ( _save_log ..  ]
-"122
-[; ;dashboard.c: 122:     } else if ( key == 3 ) {
-}
-[e $U 1128  ]
-[e :U 1127 ]
-[e $ ! == -> _key `i -> 3 `i 1129  ]
-{
-"123
-[; ;dashboard.c: 123:         show_collision();
-[e ( _show_collision ..  ]
 "124
-[; ;dashboard.c: 124:         gear = 0;
-[e = _gear -> -> 0 `i `uc ]
+[; ;dashboard.c: 124:     if ( key == 11 ) {
+[e $ ! == -> _key `i -> 11 `i 1124  ]
+{
 "125
-[; ;dashboard.c: 125:     }
-}
-[e :U 1129 ]
-[e :U 1128 ]
-[e :U 1126 ]
-[e :U 1124 ]
+[; ;dashboard.c: 125:         first_entry = 1;
+[e = F10680 -> -> 1 `i `uc ]
 "126
-[; ;dashboard.c: 126: }
+[; ;dashboard.c: 126:         clcd_write(0x01, 0);
+[e ( _clcd_write (2 , -> -> 1 `i `uc -> -> 0 `i `uc ]
+"127
+[; ;dashboard.c: 127:         state = e_main_menu;
+[e = _state . `E10603 1 ]
+"128
+[; ;dashboard.c: 128:     } else if ( key == 2 && gear < 6 ) {
+}
+[e $U 1125  ]
+[e :U 1124 ]
+[e $ ! && == -> _key `i -> 2 `i < -> _gear `i -> 6 `i 1126  ]
+{
+"129
+[; ;dashboard.c: 129:         gear += 1;
+[e =+ _gear -> -> 1 `i `uc ]
+"130
+[; ;dashboard.c: 130:         save_log();
+[e ( _save_log ..  ]
+"131
+[; ;dashboard.c: 131:     } else if ( key == 1 && gear > 0 ) {
+}
+[e $U 1127  ]
+[e :U 1126 ]
+[e $ ! && == -> _key `i -> 1 `i > -> _gear `i -> 0 `i 1128  ]
+{
+"132
+[; ;dashboard.c: 132:         gear -= 1;
+[e =- _gear -> -> 1 `i `uc ]
+"133
+[; ;dashboard.c: 133:         save_log();
+[e ( _save_log ..  ]
+"134
+[; ;dashboard.c: 134:     } else if ( key == 7 ) {
+}
+[e $U 1129  ]
+[e :U 1128 ]
+[e $ ! == -> _key `i -> 7 `i 1130  ]
+{
+"135
+[; ;dashboard.c: 135:         show_collision();
+[e ( _show_collision ..  ]
+"136
+[; ;dashboard.c: 136:         gear = 0;
+[e = _gear -> -> 0 `i `uc ]
+"137
+[; ;dashboard.c: 137:     }
+}
+[e :U 1130 ]
+[e :U 1129 ]
+[e :U 1127 ]
+[e :U 1125 ]
+"138
+[; ;dashboard.c: 138: }
 [e :UE 1122 ]
 }
 [a 7C 82 0 ]

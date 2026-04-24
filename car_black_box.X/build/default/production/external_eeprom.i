@@ -18181,7 +18181,7 @@ void write_external_eeprom(unsigned char address, unsigned char data);
 unsigned char read_external_eeprom(unsigned char address);
 # 3 "external_eeprom.c" 2
 # 1 "./black_box.h" 1
-# 42 "./black_box.h"
+# 44 "./black_box.h"
 typedef enum {
     e_dashboard, e_main_menu, e_view_log, e_set_time, e_download_log, e_clear_log
 } State_t;

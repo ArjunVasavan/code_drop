@@ -18235,7 +18235,7 @@ void i2c_rx_mode() {
 void i2c_no_ack(){
  ACKDT = 1;
  ACKEN = 1;
-    i2c_idle();
+
 }
 
 unsigned char i2c_read(){

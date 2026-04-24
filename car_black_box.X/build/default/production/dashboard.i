@@ -18169,7 +18169,7 @@ unsigned char __t1rd16on(void);
 unsigned char __t3rd16on(void);
 # 34 "C:\\Program Files\\Microchip\\xc8\\v3.10\\pic\\include/xc.h" 2 3
 # 2 "./black_box.h" 2
-# 42 "./black_box.h"
+# 44 "./black_box.h"
 typedef enum {
     e_dashboard, e_main_menu, e_view_log, e_set_time, e_download_log, e_clear_log
 } State_t;
@@ -18267,8 +18267,8 @@ static const char* gear_display[] = {"N","1","2","3","4","5","R"};
 
 static unsigned char line1[17] = " TIME    EV  SP ";
 static unsigned char time[9] = "00:00:00";
-static unsigned char event[3] = "ON";
-static unsigned char speed[4] = "00";
+
+static unsigned char speed[4] = "000";
 
 void display_labels() {
     clcd_print(line1,(0x80 + (0)));
@@ -18333,6 +18333,8 @@ void update_time() {
 }
 
 void show_collision() {
+    gear = 7;
+    save_log();
     clcd_write(0x01, 0);
     clcd_print((const unsigned char*)"COLLISION",(0x80 + (3)));
     clcd_print((const unsigned char*)"HAPPEN",(0xC0 + (4)));
@@ -18343,27 +18345,37 @@ void show_collision() {
             break;
         }
     }
+    clcd_write(0x01, 0);
 }
 
 void view_dashboard() {
+    static unsigned char first_entry = 1;
+
+    if ( first_entry ) {
+        first_entry = 0;
+        clcd_write(0x01, 0);
+    }
+
     read_real_time_clock();
     read_speed_adc();
     update_time();
     display_labels();
     clcd_print(time, (0xC0 + (0)));
-    clcd_print((const unsigned char*)gear_display[gear],(0xC0 + (9)));
+    clcd_print((const unsigned char*)gear_display[gear], (0xC0 + (10)));
     clcd_print(speed, (0xC0 + (13)));
+
     unsigned char key = read_switches(1);
     if ( key == 11 ) {
+        first_entry = 1;
         clcd_write(0x01, 0);
         state = e_main_menu;
-    } else if ( key == 1 && gear < 6 ) {
-        gear+=1;
+    } else if ( key == 2 && gear < 6 ) {
+        gear += 1;
         save_log();
-    } else if ( key == 2 && gear > 0 ) {
-        gear-=1;
+    } else if ( key == 1 && gear > 0 ) {
+        gear -= 1;
         save_log();
-    } else if ( key == 3 ) {
+    } else if ( key == 7 ) {
         show_collision();
         gear = 0;
     }

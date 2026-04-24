@@ -12,7 +12,7 @@ e_set_time 3
 e_download_log 4
 e_clear_log 5
 ]
-"115 C:\embedded\car_black_box\car_black_box.X\dashboard.c
+"127 C:\embedded\car_black_box\car_black_box.X\dashboard.c
 [e E10603 . `uc
 e_dashboard 0
 e_main_menu 1
@@ -21,7 +21,7 @@ e_set_time 3
 e_download_log 4
 e_clear_log 5
 ]
-"43 C:\embedded\car_black_box\car_black_box.X\menu.c
+"45 C:\embedded\car_black_box\car_black_box.X\menu.c
 [e E10603 . `uc
 e_dashboard 0
 e_main_menu 1
@@ -120,7 +120,7 @@ e_clear_log 5
 [v _update_time update_time `(v  1 e 1 0 ]
 "91
 [v _show_collision show_collision `(v  1 e 1 0 ]
-"104
+"107
 [v _view_dashboard view_dashboard `(v  1 e 1 0 ]
 "18 C:\embedded\car_black_box\car_black_box.X\ds1307.c
 [v _init_ds1307 init_ds1307 `(v  1 e 1 0 ]
@@ -160,15 +160,15 @@ e_clear_log 5
 [v _scan_key scan_key `(uc  1 e 1 0 ]
 "79
 [v _read_switches read_switches `(uc  1 e 1 0 ]
-"9 C:\embedded\car_black_box\car_black_box.X\menu.c
+"10 C:\embedded\car_black_box\car_black_box.X\menu.c
 [v _display_main_menu display_main_menu `(v  1 e 1 0 ]
-"71
+"69
 [v _view_log view_log `(v  1 e 1 0 ]
-"167
+"170
 [v _set_time set_time `(v  1 e 1 0 ]
-"276
+"279
 [v _download_log download_log `(v  1 e 1 0 ]
-"357
+"362
 [v _clear_log clear_log `(v  1 e 1 0 ]
 "12 C:\embedded\car_black_box\car_black_box.X\timer.c
 [v _isr isr `IIH(v  1 e 1 0 ]
@@ -182,7 +182,7 @@ e_clear_log 5
 [v _put_str put_str `(v  1 e 1 0 ]
 "25712 C:/Program Files/Microchip/MPLABX/v6.25/packs/Microchip/PIC18Fxxxx_DFP/1.7.171/xc8\pic\include\proc/pic18f4580.h
 [v _PORTB PORTB `VEuc  1 e 1 @3969 ]
-[s S356 . 1 `uc 1 RB0 1 0 :1:0 
+[s S361 . 1 `uc 1 RB0 1 0 :1:0 
 `uc 1 RB1 1 0 :1:1 
 `uc 1 RB2 1 0 :1:2 
 `uc 1 RB3 1 0 :1:3 
@@ -192,7 +192,7 @@ e_clear_log 5
 `uc 1 RB7 1 0 :1:7 
 ]
 "25756
-[s S365 . 1 `uc 1 INT0 1 0 :1:0 
+[s S370 . 1 `uc 1 INT0 1 0 :1:0 
 `uc 1 INT1 1 0 :1:1 
 `uc 1 INT2 1 0 :1:2 
 `uc 1 CANRX 1 0 :1:3 
@@ -201,7 +201,7 @@ e_clear_log 5
 `uc 1 KBI2 1 0 :1:6 
 `uc 1 KBI3 1 0 :1:7 
 ]
-[s S374 . 1 `uc 1 AN10 1 0 :1:0 
+[s S379 . 1 `uc 1 AN10 1 0 :1:0 
 `uc 1 AN8 1 0 :1:1 
 `uc 1 CANTX 1 0 :1:2 
 `uc 1 . 1 0 :1:3 
@@ -210,13 +210,13 @@ e_clear_log 5
 `uc 1 PGC 1 0 :1:6 
 `uc 1 PGD 1 0 :1:7 
 ]
-[s S383 . 1 `uc 1 FLT0 1 0 :1:0 
+[s S388 . 1 `uc 1 FLT0 1 0 :1:0 
 ]
-[s S385 . 1 `uc 1 . 1 0 :3:0 
+[s S390 . 1 `uc 1 . 1 0 :3:0 
 `uc 1 CCP2_PA2 1 0 :1:3 
 ]
-[u S388 . 1 `S356 1 . 1 0 `S365 1 . 1 0 `S374 1 . 1 0 `S383 1 . 1 0 `S385 1 . 1 0 ]
-[v _PORTBbits PORTBbits `VES388  1 e 1 @3969 ]
+[u S393 . 1 `S361 1 . 1 0 `S370 1 . 1 0 `S379 1 . 1 0 `S388 1 . 1 0 `S390 1 . 1 0 ]
+[v _PORTBbits PORTBbits `VES393  1 e 1 @3969 ]
 "26056
 [v _PORTD PORTD `VEuc  1 e 1 @3971 ]
 "27057
@@ -365,48 +365,52 @@ e_clear_log 5
 [v _minutes minutes `uc  1 e 1 0 ]
 "19
 [v _seconds seconds `uc  1 e 1 0 ]
+"8 C:\embedded\car_black_box\car_black_box.X\menu.c
+[v _first_entry first_entry `uc  1 s 1 first_entry ]
 "10 C:\embedded\car_black_box\car_black_box.X\timer.c
 [v _timer_count timer_count `ul  1 e 4 0 ]
 "32 C:\embedded\car_black_box\car_black_box.X\main.c
 [v _main main `(i  1 e 2 0 ]
 {
-"85
+"84
 } 0
-"71 C:\embedded\car_black_box\car_black_box.X\menu.c
+"69 C:\embedded\car_black_box\car_black_box.X\menu.c
 [v _view_log view_log `(v  1 e 1 0 ]
 {
-"146
+"144
 [v view_log@serial_no serial_no `[10]*.32Cuc  1 a 20 21 ]
 "133
 [v view_log@time_str time_str `[9]uc  1 a 9 45 ]
-"129
+"130
 [v view_log@spd_str spd_str `[4]uc  1 a 4 41 ]
-"124
-[v view_log@gr gr `uc  1 a 1 59 ]
-"85
-[v view_log@key key `uc  1 a 1 58 ]
-"127
-[v view_log@sc sc `uc  1 a 1 57 ]
-"126
-[v view_log@mn mn `uc  1 a 1 56 ]
 "125
+[v view_log@gr gr `uc  1 a 1 59 ]
+"128
+[v view_log@sc sc `uc  1 a 1 57 ]
+"127
+[v view_log@mn mn `uc  1 a 1 56 ]
+"126
 [v view_log@hr hr `uc  1 a 1 55 ]
-"123
+"124
 [v view_log@spd spd `uc  1 a 1 54 ]
-"73
+"96
+[v view_log@key key `uc  1 a 1 58 ]
+"71
 [v view_log@read_index read_index `uc  1 s 1 read_index ]
-"74
+"72
 [v view_log@log_count log_count `uc  1 s 1 log_count ]
 "142
-[v view_log@F10681 F10681 `[10]*.32Cuc  1 s 20 F10681 ]
-"165
+[v view_log@F10682 F10682 `[10]*.32Cuc  1 s 20 F10682 ]
+"168
 } 0
-"104 C:\embedded\car_black_box\car_black_box.X\dashboard.c
+"107 C:\embedded\car_black_box\car_black_box.X\dashboard.c
 [v _view_dashboard view_dashboard `(v  1 e 1 0 ]
 {
-"112
+"123
 [v view_dashboard@key key `uc  1 a 1 52 ]
-"126
+"108
+[v view_dashboard@first_entry first_entry `uc  1 s 1 first_entry ]
+"138
 } 0
 "79
 [v _update_time update_time `(v  1 e 1 0 ]
@@ -416,9 +420,9 @@ e_clear_log 5
 "91
 [v _show_collision show_collision `(v  1 e 1 0 ]
 {
-"97
+"99
 [v show_collision@key key `uc  1 a 1 5 ]
-"102
+"105
 } 0
 "20
 [v _save_log save_log `(v  1 e 1 0 ]
@@ -507,28 +511,28 @@ e_clear_log 5
 {
 "18
 } 0
-"167 C:\embedded\car_black_box\car_black_box.X\menu.c
+"170 C:\embedded\car_black_box\car_black_box.X\menu.c
 [v _set_time set_time `(v  1 e 1 0 ]
 {
-"226
+"229
 [v set_time@bcd_sec bcd_sec `uc  1 a 1 26 ]
-"225
+"228
 [v set_time@bcd_min bcd_min `uc  1 a 1 25 ]
-"224
+"227
 [v set_time@bcd_hr bcd_hr `uc  1 a 1 24 ]
-"178
+"181
 [v set_time@key key `uc  1 a 1 27 ]
-"173
+"176
 [v set_time@delay delay `ul  1 a 4 20 ]
-"172
+"175
 [v set_time@field field `uc  1 a 1 32 ]
-"171
+"174
 [v set_time@sec sec `uc  1 a 1 31 ]
 [v set_time@min min `uc  1 a 1 30 ]
 [v set_time@hr hr `uc  1 a 1 29 ]
-"172
+"175
 [v set_time@blink_flag blink_flag `uc  1 a 1 28 ]
-"274
+"277
 } 0
 "60 C:\embedded\car_black_box\car_black_box.X\clcd.c
 [v _clcd_putch clcd_putch `(v  1 e 1 0 ]
@@ -602,34 +606,34 @@ e_clear_log 5
 {
 "69
 } 0
-"276 C:\embedded\car_black_box\car_black_box.X\menu.c
+"279 C:\embedded\car_black_box\car_black_box.X\menu.c
 [v _download_log download_log `(v  1 e 1 0 ]
 {
-"319
+"322
 [v download_log@time_str time_str `[9]uc  1 a 9 40 ]
-"315
+"318
 [v download_log@spd_str spd_str `[4]uc  1 a 4 36 ]
-"309
-[v download_log@gr gr `uc  1 a 1 56 ]
 "312
+[v download_log@gr gr `uc  1 a 1 56 ]
+"315
 [v download_log@sc sc `uc  1 a 1 55 ]
-"311
+"314
 [v download_log@mn mn `uc  1 a 1 54 ]
-"310
+"313
 [v download_log@hr hr `uc  1 a 1 53 ]
-"308
+"311
 [v download_log@spd spd `uc  1 a 1 49 ]
-"302
+"305
 [v download_log@i i `i  1 a 2 51 ]
-"291
+"294
 [v download_log@serial_no serial_no `[10]*.32Cuc  1 a 20 16 ]
-"278
+"281
 [v download_log@read_index read_index `uc  1 a 1 57 ]
-"279
+"282
 [v download_log@count count `uc  1 a 1 50 ]
-"289
-[v download_log@F10697 F10697 `[10]*.32Cuc  1 s 20 F10697 ]
-"355
+"292
+[v download_log@F10698 F10698 `[10]*.32Cuc  1 s 20 F10698 ]
+"360
 } 0
 "32 C:\embedded\car_black_box\car_black_box.X\external_eeprom.c
 [v _read_external_eeprom read_external_eeprom `(uc  1 e 1 0 ]
@@ -707,21 +711,22 @@ e_clear_log 5
 [v ___awdiv@divisor divisor `i  1 p 2 2 ]
 "41
 } 0
-"9 C:\embedded\car_black_box\car_black_box.X\menu.c
+"10 C:\embedded\car_black_box\car_black_box.X\menu.c
 [v _display_main_menu display_main_menu `(v  1 e 1 0 ]
 {
-"15
+"24
 [v display_main_menu@menu menu `[4]*.32Cuc  1 a 8 6 ]
-"22
-[v display_main_menu@key key `uc  1 a 1 14 ]
-"11
-[v display_main_menu@menu_index menu_index `uc  1 s 1 menu_index ]
+"31
+[v display_main_menu@key key `uc  1 a 1 18 ]
 "12
-[v display_main_menu@cursor cursor `uc  1 s 1 cursor ]
+[v display_main_menu@menu_index menu_index `uc  1 s 1 menu_index ]
 "13
+[v display_main_menu@cursor cursor `uc  1 s 1 cursor ]
+"14
 [v display_main_menu@selected selected `uc  1 s 1 selected ]
-[v display_main_menu@F10667 F10667 `[4]*.32Cuc  1 s 8 F10667 ]
-"69
+"22
+[v display_main_menu@F10668 F10668 `[4]*.32Cuc  1 s 8 F10668 ]
+"67
 } 0
 "79 C:\embedded\car_black_box\car_black_box.X\matrix_keypad.c
 [v _read_switches read_switches `(uc  1 e 1 0 ]
@@ -741,10 +746,10 @@ e_clear_log 5
 {
 "77
 } 0
-"357 C:\embedded\car_black_box\car_black_box.X\menu.c
+"362 C:\embedded\car_black_box\car_black_box.X\menu.c
 [v _clear_log clear_log `(v  1 e 1 0 ]
 {
-"374
+"378
 } 0
 "16 C:\embedded\car_black_box\car_black_box.X\external_eeprom.c
 [v _write_external_eeprom write_external_eeprom `(v  1 e 1 0 ]
