@@ -14,6 +14,7 @@ Buildroot is a **set of Makefiles and patches** that automates the process of bu
 - Can generate both **glibc** and **uClibc** based toolchains
 - Actively maintained with regular releases
 
+
 ---
 
 ## What is a Makefile?
