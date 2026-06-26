@@ -13,6 +13,7 @@ Buildroot is a **set of Makefiles and patches** that automates the process of bu
 - Supports **multiple root filesystem image formats** (ext2, ext4, NTFS, JFFS2, squashfs, etc.)
 - Can generate both **glibc** and **uClibc** based toolchains
 - Actively maintained with regular releases
+
 ---
 
 ## What is a Makefile?
